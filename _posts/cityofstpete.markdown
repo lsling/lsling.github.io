@@ -1,5 +1,5 @@
 ---
-title: St. Pete, FL
+title: City of St. Pete, FL
 subtitle: Revize Platform, PHP
 layout: default
 modal-id: stpete
