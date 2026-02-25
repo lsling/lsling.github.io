@@ -1,16 +1,14 @@
-url: http://lauraslingerland.com
+url: lsling.github.io
 baseurl: ""
 
 # Site settings
 title: Laura Slingerland
 # email: laura.sling@gmail.com
-description: "A portfolio and blog website"
+description: "A portfolio website"
 
 
 # Social networks usernames (many more available: google-plus, flickr, dribbble, pinterest, instagram, tumblr, linkedin, etc.)
 social:
-  - title: github
-    url: http://github.com/lsling
   - title: linkedin
     url: https://www.linkedin.com/in/laura-slingerland/
   - title: facebook
@@ -20,10 +18,6 @@ social:
 
 
 
-# Postal address (add as many lines as necessary)
-address:
-  - line: 3277 Huntington Pl Dr
-  - line: Sarasota, FL 34237
 
 # Build settings
 markdown: kramdown
