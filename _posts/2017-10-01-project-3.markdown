@@ -1,15 +1,11 @@
 ---
-title: Focus
-subtitle: AngularJS
+title: St. Pete Fire
+subtitle: Bootstrap
 layout: default
 modal-id: 3
-date: 2017-10-01
-img: focus.png
-thumbnail: focus.png
-alt: Focus App
-project-date: October 2017
-github: bloctime
-category: Front-end Development
-description: Focus is a Pomodoro Technique time management application built with Firebase and Angular. <a href="https://powerful-gorge-25230.herokuapp.com/" target="_blank">View the demo app</a>.
+img: stpetefire_webdesign_large.png
+thumbnail: stpetefire_webdesign_single.png
+alt: St. Pete Fire Website
+description: A bootstrap site built under the City of St. Pete involving content curation, site reorganization and implementation of online forms. View the live site at <a href="https://fire.stpete.org/" target="_blank">fire.stpete.org</a>. Built using Bootstrap.
 
 ---

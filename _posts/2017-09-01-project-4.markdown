@@ -1,15 +1,11 @@
 ---
-title: Wiki, Wiki, What!
-subtitle: Ruby on Rails
+title: St. Pete International Baseball
+subtitle: Bootstrap
 layout: default
 modal-id: 4
-date: 2017-10-31
-img: blocipedia.png
-thumbnail: blocipedia.png
-alt: Wiki, wiki, what! App
-project-date: September 2017
-github: blocipedia
-category: Back-end Development
-description: Wiki, Wiki, What! is a CRUD application using Ruby on Rails that allows users to create public and private Markdown-based wikis. It is a project built into the back-end portion of the Bloc Web Developer Track curriculum. It integrates Stripe for upgrading accounts, Pundit gem for authorization, Devise gem for authentication, and the Redcarpet Markdown gem.
+img: stpeteintbaseball_webdesign_large.png
+thumbnail: stpeteintbaseball_webdesign_single.png
+alt: St. Pete International Baseball
+description: A simple, one-page bootstrap site built under the City of St. Pete. Built using Bootstrap.
 
 ---
