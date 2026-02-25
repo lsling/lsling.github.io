@@ -1,16 +1,15 @@
 ---
-title: CheckIt
-subtitle: AngularJS
+title: St. Pete, FL
+subtitle: Revize Platform, PHP
 layout: default
-modal-id: 2
+modal-id: stpete
 date: 2017-10-31
-img: blocitoff.png
-thumbnail: blocitoff.png
+img: stpete_web_large.png
+thumbnail: stpete_webdesign_single.png
 alt: image-alt
 project-date: October 2017
-github: blocitoff
-category: Front-end Development
-description: CheckIt is an app that uses the Firebase API and AngularJS to create tasks with an expiration date. It is one of the final projects for the Bloc Web Developer Track curriculum. It will manage your to-do lists by automatically deleting tasks that have not been completed after seven days. <a href="https://sleepy-falls-63128.herokuapp.com/" target="_blank">View the demo app</a>.
+category: Project Management
+description: A complete website overhaul, in partnership with Revize, that included art direction and project management. View the live site at <a href="https://www.stpete.org/" target="_blank">stpete.org</a>. 
 
 
 ---
