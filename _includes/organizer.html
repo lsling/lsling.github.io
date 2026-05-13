@@ -1,0 +1,329 @@
+
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: var(--font-sans); }
+  .container { padding: 1rem 0; max-width: 680px; }
+  .tabs { display: flex; gap: 6px; margin-bottom: 1.25rem; flex-wrap: wrap; }
+  .tab { padding: 7px 14px; border: 0.5px solid var(--color-border-secondary); border-radius: var(--border-radius-md); background: transparent; cursor: pointer; font-size: 13px; color: var(--color-text-secondary); transition: all 0.15s; }
+  .tab.active { background: var(--color-background-secondary); color: var(--color-text-primary); border-color: var(--color-border-primary); font-weight: 500; }
+  .panel { display: none; }
+  .panel.active { display: block; }
+  .card { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 1rem 1.25rem; margin-bottom: 0.75rem; }
+  .task-row { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 0.5px solid var(--color-border-tertiary); }
+  .task-row:last-child { border-bottom: none; }
+  .task-row input[type=checkbox] { width: 18px; height: 18px; cursor: pointer; accent-color: #7F77DD; flex-shrink: 0; }
+  .task-text { flex: 1; font-size: 14px; color: var(--color-text-primary); }
+  .task-text.done { text-decoration: line-through; color: var(--color-text-tertiary); }
+  .badge { font-size: 11px; padding: 2px 8px; border-radius: 999px; font-weight: 500; flex-shrink: 0; }
+  .badge-urgent { background: #FAECE7; color: #993C1D; }
+  .badge-soon { background: #FAEEDA; color: #854F0B; }
+  .badge-later { background: #EAF3DE; color: #3B6D11; }
+  .badge-brain { background: #EEEDFE; color: #534AB7; }
+  .add-row { display: flex; gap: 8px; margin-top: 0.75rem; }
+  .add-row input[type=text] { flex: 1; font-size: 13px; }
+  .add-row select { font-size: 13px; padding: 0 8px; border: 0.5px solid var(--color-border-secondary); border-radius: var(--border-radius-md); background: var(--color-background-primary); color: var(--color-text-primary); }
+  .btn { padding: 7px 14px; border: 0.5px solid var(--color-border-secondary); border-radius: var(--border-radius-md); background: transparent; cursor: pointer; font-size: 13px; color: var(--color-text-primary); }
+  .btn:hover { background: var(--color-background-secondary); }
+  .btn-primary { background: #7F77DD; color: white; border-color: #7F77DD; }
+  .btn-primary:hover { background: #534AB7; border-color: #534AB7; }
+  .section-label { font-size: 12px; font-weight: 500; color: var(--color-text-secondary); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem; }
+  .timer-display { font-size: 48px; font-weight: 500; color: var(--color-text-primary); text-align: center; padding: 1.5rem 0 1rem; font-variant-numeric: tabular-nums; }
+  .timer-label { text-align: center; font-size: 13px; color: var(--color-text-secondary); margin-bottom: 1.5rem; }
+  .timer-controls { display: flex; gap: 8px; justify-content: center; }
+  .progress-bar { height: 6px; background: var(--color-background-secondary); border-radius: 999px; margin: 1rem 0; overflow: hidden; }
+  .progress-fill { height: 100%; border-radius: 999px; background: #7F77DD; transition: width 0.5s; }
+  .brain-dump-area { width: 100%; min-height: 120px; font-size: 14px; border: 0.5px solid var(--color-border-secondary); border-radius: var(--border-radius-md); padding: 10px; font-family: var(--font-sans); color: var(--color-text-primary); background: var(--color-background-primary); resize: vertical; }
+  .brain-dump-area:focus { outline: none; border-color: #7F77DD; }
+  .thought-list { margin-top: 0.75rem; }
+  .thought-item { display: flex; align-items: center; justify-content: space-between; padding: 7px 10px; background: var(--color-background-secondary); border-radius: var(--border-radius-md); margin-bottom: 6px; font-size: 13px; gap: 8px; }
+  .thought-actions { display: flex; gap: 5px; flex-shrink: 0; }
+  .thought-btn { font-size: 11px; padding: 2px 8px; border-radius: var(--border-radius-md); border: 0.5px solid var(--color-border-secondary); background: transparent; cursor: pointer; color: var(--color-text-secondary); }
+  .thought-btn:hover { background: var(--color-background-primary); }
+  .energy-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin-bottom: 1rem; }
+  .energy-card { background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 0.875rem; cursor: pointer; border: 2px solid transparent; transition: border-color 0.15s; }
+  .energy-card.selected { border-color: #7F77DD; }
+  .energy-card .e-icon { font-size: 22px; margin-bottom: 6px; }
+  .energy-card .e-label { font-size: 13px; font-weight: 500; color: var(--color-text-primary); }
+  .energy-card .e-desc { font-size: 11px; color: var(--color-text-secondary); margin-top: 2px; }
+  .suggestion-box { background: #EEEDFE; border-radius: var(--border-radius-md); padding: 0.875rem 1rem; font-size: 13px; color: #3C3489; line-height: 1.6; margin-top: 0.75rem; }
+  .stat-row { display: flex; gap: 10px; margin-bottom: 1rem; }
+  .stat { flex: 1; background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 0.75rem; text-align: center; }
+  .stat .s-num { font-size: 22px; font-weight: 500; color: var(--color-text-primary); }
+  .stat .s-lbl { font-size: 11px; color: var(--color-text-secondary); margin-top: 2px; }
+</style>
+
+<h2 class="sr-only">ADHD Life Organizer with task management, focus timer, brain dump, and energy check-in</h2>
+
+<div class="container">
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('tasks')"><i class="ti ti-list-check" aria-hidden="true"></i> Tasks</button>
+    <button class="tab" onclick="switchTab('focus')"><i class="ti ti-clock" aria-hidden="true"></i> Focus timer</button>
+    <button class="tab" onclick="switchTab('brain')"><i class="ti ti-bolt" aria-hidden="true"></i> Brain dump</button>
+    <button class="tab" onclick="switchTab('energy')"><i class="ti ti-activity" aria-hidden="true"></i> Energy check</button>
+  </div>
+
+  <!-- TASKS -->
+  <div id="tab-tasks" class="panel active">
+    <div class="stat-row">
+      <div class="stat"><div class="s-num" id="stat-done">0</div><div class="s-lbl">done today</div></div>
+      <div class="stat"><div class="s-num" id="stat-left">0</div><div class="s-lbl">remaining</div></div>
+      <div class="stat"><div class="s-num" id="stat-brain-q">0</div><div class="s-lbl">brain queue</div></div>
+    </div>
+    <div class="card">
+      <div class="section-label">Just 3 things today</div>
+      <div id="task-list"></div>
+      <div class="add-row">
+        <input type="text" id="new-task" placeholder="Add a task..." onkeydown="if(event.key==='Enter')addTask()">
+        <select id="task-priority">
+          <option value="urgent">🔴 Urgent</option>
+          <option value="soon" selected>🟡 Soon</option>
+          <option value="later">🟢 Later</option>
+          <option value="brain">🧠 Brain</option>
+        </select>
+        <button class="btn btn-primary" onclick="addTask()">Add</button>
+      </div>
+    </div>
+    <button class="btn" style="width:100%;margin-top:4px" onclick="sendPrompt('Help me break down my tasks for today. Here are my current tasks: ' + getTaskSummary())">↗ Help me prioritize these tasks</button>
+  </div>
+
+  <!-- FOCUS TIMER -->
+  <div id="tab-focus" class="panel">
+    <div class="card">
+      <div class="timer-display" id="timer-display">25:00</div>
+      <div class="progress-bar"><div class="progress-fill" id="timer-progress" style="width:100%"></div></div>
+      <div class="timer-label" id="timer-label">Pomodoro — focus session</div>
+      <div class="timer-controls">
+        <button class="btn" onclick="setTimer(25,'focus')">25 min</button>
+        <button class="btn" onclick="setTimer(5,'short break')">5 min break</button>
+        <button class="btn" onclick="setTimer(15,'long break')">15 min break</button>
+        <button class="btn btn-primary" id="start-btn" onclick="toggleTimer()">Start</button>
+      </div>
+    </div>
+    <div class="card" style="margin-top:0.75rem">
+      <div class="section-label">Focus tips for ADHD</div>
+      <div style="font-size:13px;color:var(--color-text-secondary);line-height:1.8">
+        <div style="margin-bottom:6px"><i class="ti ti-headphones" aria-hidden="true" style="margin-right:6px"></i>Try brown noise or lo-fi music</div>
+        <div style="margin-bottom:6px"><i class="ti ti-device-mobile-off" aria-hidden="true" style="margin-right:6px"></i>Phone in another room during session</div>
+        <div style="margin-bottom:6px"><i class="ti ti-writing" aria-hidden="true" style="margin-right:6px"></i>Write your one task focus before starting</div>
+        <div><i class="ti ti-check" aria-hidden="true" style="margin-right:6px"></i>Celebrate every completed session!</div>
+      </div>
+    </div>
+    <button class="btn" style="width:100%;margin-top:4px" onclick="sendPrompt('I just finished a focus session. Help me reflect on what I accomplished and plan my next session.')">↗ Reflect on my session</button>
+  </div>
+
+  <!-- BRAIN DUMP -->
+  <div id="tab-brain" class="panel">
+    <div class="card">
+      <div class="section-label">Dump everything on your mind</div>
+      <textarea class="brain-dump-area" id="brain-input" placeholder="Just type whatever's in your head — tasks, worries, ideas, random thoughts. Don't filter it.&#10;&#10;Press Enter to capture each thought."></textarea>
+      <div style="display:flex;gap:8px;margin-top:8px">
+        <button class="btn btn-primary" onclick="captureBrainDump()">Capture thought</button>
+        <button class="btn" onclick="sendPrompt('Help me sort and organize these thoughts: ' + getBrainDump())">↗ Help me sort these</button>
+      </div>
+    </div>
+    <div class="thought-list" id="thought-list"></div>
+  </div>
+
+  <!-- ENERGY CHECK -->
+  <div id="tab-energy" class="panel">
+    <div class="card">
+      <div class="section-label">How's your energy right now?</div>
+      <div class="energy-grid">
+        <div class="energy-card" onclick="selectEnergy(this,'high','High energy — tackle complex tasks, meetings, creative work')">
+          <div class="e-icon">⚡</div>
+          <div class="e-label">High energy</div>
+          <div class="e-desc">Firing on all cylinders</div>
+        </div>
+        <div class="energy-card" onclick="selectEnergy(this,'medium','Medium energy — good for routine tasks, emails, planning')">
+          <div class="e-icon">🌤</div>
+          <div class="e-label">Medium energy</div>
+          <div class="e-desc">Functional, a bit scattered</div>
+        </div>
+        <div class="energy-card" onclick="selectEnergy(this,'low','Low energy — stick to simple tasks, rest, light admin work')">
+          <div class="e-icon">🌧</div>
+          <div class="e-label">Low energy</div>
+          <div class="e-desc">Running on fumes</div>
+        </div>
+        <div class="energy-card" onclick="selectEnergy(this,'hyperfocus','Hyperfocus mode — protect this time, stay on one thing')">
+          <div class="e-icon">🎯</div>
+          <div class="e-label">Hyperfocus</div>
+          <div class="e-desc">In the zone, don't disrupt</div>
+        </div>
+      </div>
+      <div class="suggestion-box" id="energy-suggestion" style="display:none"></div>
+    </div>
+    <button class="btn" style="width:100%;margin-top:4px" onclick="sendPrompt('Based on my current energy level, help me plan what to work on and in what order.')">↗ Plan my day around my energy</button>
+  </div>
+</div>
+
+<script>
+let tasks = [
+  {id:1, text:'Check emails', priority:'soon', done:false},
+  {id:2, text:'Review project notes', priority:'brain', done:false},
+  {id:3, text:'Schedule dentist appointment', priority:'later', done:false},
+];
+let thoughts = [];
+let timerInterval = null;
+let timerRunning = false;
+let timerSeconds = 25*60;
+let totalSeconds = 25*60;
+let timerMode = 'focus';
+let nextId = 10;
+
+function switchTab(name) {
+  document.querySelectorAll('.tab').forEach((t,i) => t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('tab-'+name).classList.add('active');
+  event.currentTarget.classList.add('active');
+}
+
+function getBadge(p) {
+  const map = {urgent:'<span class="badge badge-urgent">urgent</span>',soon:'<span class="badge badge-soon">soon</span>',later:'<span class="badge badge-later">later</span>',brain:'<span class="badge badge-brain">brain</span>'};
+  return map[p]||'';
+}
+
+function renderTasks() {
+  const list = document.getElementById('task-list');
+  list.innerHTML = tasks.map(t => `
+    <div class="task-row">
+      <input type="checkbox" ${t.done?'checked':''} onchange="toggleTask(${t.id})">
+      <span class="task-text ${t.done?'done':''}">${t.text}</span>
+      ${getBadge(t.priority)}
+      <button onclick="removeTask(${t.id})" style="background:none;border:none;cursor:pointer;color:var(--color-text-tertiary);font-size:16px;padding:0 2px;" aria-label="Remove task"><i class="ti ti-x"></i></button>
+    </div>`).join('');
+  const done = tasks.filter(t=>t.done).length;
+  const left = tasks.filter(t=>!t.done).length;
+  document.getElementById('stat-done').textContent = done;
+  document.getElementById('stat-left').textContent = left;
+  document.getElementById('stat-brain-q').textContent = thoughts.length;
+}
+
+function addTask() {
+  const input = document.getElementById('new-task');
+  const priority = document.getElementById('task-priority').value;
+  const text = input.value.trim();
+  if(!text) return;
+  tasks.push({id:nextId++, text, priority, done:false});
+  input.value = '';
+  renderTasks();
+}
+
+function toggleTask(id) {
+  const t = tasks.find(t=>t.id===id);
+  if(t) t.done = !t.done;
+  renderTasks();
+}
+
+function removeTask(id) {
+  tasks = tasks.filter(t=>t.id!==id);
+  renderTasks();
+}
+
+function getTaskSummary() {
+  return tasks.map(t=>`${t.text} (${t.priority}${t.done?' - done':''})`).join(', ');
+}
+
+function fmt(s) {
+  const m = Math.floor(s/60);
+  const sec = s%60;
+  return `${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`;
+}
+
+function setTimer(mins, mode) {
+  clearInterval(timerInterval);
+  timerRunning = false;
+  timerSeconds = mins*60;
+  totalSeconds = mins*60;
+  timerMode = mode;
+  document.getElementById('timer-display').textContent = fmt(timerSeconds);
+  document.getElementById('timer-progress').style.width = '100%';
+  document.getElementById('timer-label').textContent = mins + ' min — ' + mode;
+  document.getElementById('start-btn').textContent = 'Start';
+}
+
+function toggleTimer() {
+  if(timerRunning) {
+    clearInterval(timerInterval);
+    timerRunning = false;
+    document.getElementById('start-btn').textContent = 'Resume';
+  } else {
+    timerRunning = true;
+    document.getElementById('start-btn').textContent = 'Pause';
+    timerInterval = setInterval(() => {
+      timerSeconds--;
+      document.getElementById('timer-display').textContent = fmt(timerSeconds);
+      document.getElementById('timer-progress').style.width = Math.round((timerSeconds/totalSeconds)*100)+'%';
+      if(timerSeconds <= 0) {
+        clearInterval(timerInterval);
+        timerRunning = false;
+        document.getElementById('timer-display').textContent = '00:00';
+        document.getElementById('timer-label').textContent = '✓ Done! Great work.';
+        document.getElementById('start-btn').textContent = 'Start';
+      }
+    }, 1000);
+  }
+}
+
+function captureBrainDump() {
+  const input = document.getElementById('brain-input');
+  const text = input.value.trim();
+  if(!text) return;
+  const lines = text.split('\n').filter(l=>l.trim());
+  lines.forEach(line => {
+    if(line.trim()) thoughts.push({id:nextId++, text:line.trim()});
+  });
+  input.value = '';
+  renderThoughts();
+  renderTasks();
+}
+
+function renderThoughts() {
+  const list = document.getElementById('thought-list');
+  list.innerHTML = thoughts.map(t => `
+    <div class="thought-item">
+      <span style="flex:1;font-size:13px;color:var(--color-text-primary)">${t.text}</span>
+      <div class="thought-actions">
+        <button class="thought-btn" onclick="moveToTask(${t.id})">→ task</button>
+        <button class="thought-btn" onclick="removeThought(${t.id})">dismiss</button>
+      </div>
+    </div>`).join('');
+  document.getElementById('stat-brain-q').textContent = thoughts.length;
+}
+
+function moveToTask(id) {
+  const t = thoughts.find(t=>t.id===id);
+  if(t) {
+    tasks.push({id:nextId++, text:t.text, priority:'soon', done:false});
+    thoughts = thoughts.filter(t=>t.id!==id);
+    renderThoughts();
+    renderTasks();
+  }
+}
+
+function removeThought(id) {
+  thoughts = thoughts.filter(t=>t.id!==id);
+  renderThoughts();
+  renderTasks();
+}
+
+function getBrainDump() {
+  return thoughts.map(t=>t.text).join(', ');
+}
+
+const energySuggestions = {
+  high: 'Now is the time for deep work — tackle your most complex or dreaded task first. Schedule calls, creative projects, or anything requiring sustained attention.',
+  medium: 'Good for structured tasks: clearing emails, doing admin, following up on things. Avoid starting brand-new complex projects right now.',
+  low: 'Be kind to yourself. Stick to very simple tasks, rest if possible, or use this time for passive learning. Don\'t judge the low energy — it\'s part of the cycle.',
+  hyperfocus: 'You\'re in a rare and powerful state — protect it! Close notifications, don\'t switch tasks. Set a timer so you remember to eat/drink. Ride the wave.',
+};
+
+function selectEnergy(el, level, hint) {
+  document.querySelectorAll('.energy-card').forEach(c=>c.classList.remove('selected'));
+  el.classList.add('selected');
+  const box = document.getElementById('energy-suggestion');
+  box.textContent = energySuggestions[level];
+  box.style.display = 'block';
+}
+
+renderTasks();
+</script>
